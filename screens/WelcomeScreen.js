@@ -1,5 +1,11 @@
 import * as React from "react";
-import { TextInput, Button } from "react-native-paper";
+import color from "color";
+import {
+  DefaultTheme,
+  Provider as PaperProvider,
+  TextInput,
+  Button,
+} from "react-native-paper";
 import { StyleSheet, Image, Text, View } from "react-native";
 
 const theme = {

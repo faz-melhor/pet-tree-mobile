@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, Button, Stylesheet } from "react-native";
+import { View, Text, Button, StyleSheet } from "react-native";
 
 const NavigationScreen = ({ navigation }) => {
   return (
@@ -21,6 +21,6 @@ const NavigationScreen = ({ navigation }) => {
   );
 };
 
-const stylesheet = Stylesheet.create({});
+const stylesheet = StyleSheet.create({});
 
 export default NavigationScreen;

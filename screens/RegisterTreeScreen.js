@@ -1,10 +1,10 @@
 import * as React from "react";
-import { Text, Stylesheet } from "react-native";
+import { Text, StyleSheet } from "react-native";
 
 const RegisterTreeScreen = () => {
   return <Text>Screen Test</Text>;
 };
 
-const stylesheet = Stylesheet.create({});
+const stylesheet = StyleSheet.create({});
 
 export default RegisterTreeScreen;
