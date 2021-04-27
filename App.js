@@ -7,7 +7,15 @@ import RegisterTreeScreen from "./screens/RegisterTreeScreen";
 import TreeMapScreen from "./screens/TreeMapScreen";
 
 import color from "color";
-import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
+import {
+  DefaultTheme,
+  withTheme,
+  Provider as PaperProvider,
+} from "react-native-paper";
+
+RegisterTreeScreen["navigationOptions"] = (screenProps) => ({
+  title: "Registrar Nova Árvore",
+});
 
 const navigator = createStackNavigator(
   {
@@ -26,14 +34,15 @@ const navigator = createStackNavigator(
 
 const theme = {
   ...DefaultTheme,
-  dark: true,
+  dark: false,
   roundness: 10,
   animation: {
     scale: 2.0,
   },
+  defaultMargin: 15,
   colors: {
     primary: "#43a047",
-    accent: "#03dac4",
+    accent: "#43a047",
     background: "#f6f6f6",
     surface: "#FFFFFF",
     error: "#B00020",
@@ -56,4 +65,4 @@ const RootScreen = () => {
   );
 };
 
-export default RootScreen;
+export default withTheme(RootScreen);
