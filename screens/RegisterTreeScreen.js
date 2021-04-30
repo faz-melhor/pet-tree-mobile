@@ -1,55 +1,47 @@
 import * as React from "react";
-import { StyleSheet, Image, Text, View } from "react-native";
-import { TextInput, Button } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { TextInput, Text, Button, Switch, useTheme } from "react-native-paper";
 
 const RegisterScreen = () => {
-  const [email, setEmail] = React.useState("");
-  const [nome, setNome] = React.useState("");
+  const [description, setDescription] = React.useState("");
+  const [treeSpecies, setTreeSpecies] = React.useState("");
+  const [treeFruitful, setTreeFruitful] = React.useState(false);
 
-  const [password, setPassword] = React.useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = React.useState("");
+  const { defaultMargin } = useTheme();
+
+  const onToggleFruitfulSwitch = () => setTreeFruitful(!treeFruitful);
 
   return (
-    <View style={styles.container}>
+    <View style={styles({ defaultMargin }).container}>
       <TextInput
-        style={styles.item}
-        label="E-mail"
+        style={styles().item}
+        label="Descrição"
         mode="outlined"
-        value={email}
-        onChangeText={(email) => setEmail(email)}
+        value={description}
+        onChangeText={(d) => setDescription(d)}
       />
       <TextInput
-        style={styles.item}
-        label="Nome"
+        style={styles().item}
+        label="Espécie"
         mode="outlined"
-        value={nome}
-        onChangeText={(nome) => setNome(nome)}
+        value={treeSpecies}
+        onChangeText={(s) => setTreeSpecies(s)}
       />
-      <TextInput
-        style={styles.item}
-        label="Senha"
-        mode="outlined"
-        secureTextEntry={true}
-        value={password}
-        onChangeText={(password) => setPassword(password)}
-      />
-      <TextInput
-        style={styles.item}
-        label="Confirmar Senha"
-        mode="outlined"
-        secureTextEntry={true}
-        value={passwordConfirmation}
-        onChangeText={(passwordConfirmation) =>
-          setPasswordConfirmation(passwordConfirmation)
-        }
-      />
+      <View style={styles().switchContainer}>
+        <Switch
+          style={styles().switchComponent}
+          value={treeFruitful}
+          onValueChange={onToggleFruitfulSwitch}
+        />
+        <Text style={styles().switchLabel}>Frutífera</Text>
+      </View>
       <Button
-        style={styles.button}
+        style={styles().button}
         contentStyle={{ height: 50 }}
         mode="contained"
         onPress={() => console.log("Pressed")}
       >
-        Entrar
+        Confirmar
       </Button>
     </View>
   );
@@ -57,30 +49,47 @@ const RegisterScreen = () => {
 
 export default RegisterScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  textContainer: {
-    margin: 10,
-    flex: 1,
-  },
-  item: {
-    marginVertical: 10,
-  },
-  button: {
-    marginVertical: 10,
-  },
-  innerText: {
-    color: "#43a047",
-  },
-  containerOptions: {
-    alignItems: "center",
-  },
+const styles = (props) => {
+  const { defaultMargin } = props || 5;
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      margin: defaultMargin,
+    },
+    textContainer: {
+      margin: 10,
+      flex: 1,
+    },
+    item: {
+      marginVertical: 10,
+    },
+    button: {
+      marginVertical: 10,
+    },
+    innerText: {
+      color: "#43a047",
+    },
+    containerOptions: {
+      alignItems: "center",
+    },
 
-  optionsText: {
-    marginTop: 10,
-    fontSize: 16,
-    alignItems: "center",
-  },
-});
+    optionsText: {
+      marginTop: 10,
+      fontSize: 16,
+      alignItems: "center",
+    },
+    switchComponent: {
+      transform: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+    },
+    switchLabel: {
+      fontSize: 20,
+      textAlignVertical: "bottom",
+    },
+    switchContainer: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "flex-start",
+      justifyContent: "flex-start",
+    },
+  });
+};
