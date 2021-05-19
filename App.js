@@ -3,6 +3,7 @@ import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import NavigatorScreen from "./screens/NavigatorScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
+import RegisterAccountScreen from "./screens/RegisterAccountScreen";
 import RegisterTreeScreen from "./screens/RegisterTreeScreen";
 import TreeMapScreen from "./screens/TreeMapScreen";
 
@@ -17,10 +18,15 @@ RegisterTreeScreen["navigationOptions"] = (screenProps) => ({
   title: "Registrar Nova Árvore",
 });
 
+RegisterAccountScreen["navigationOptions"] = (screenProps) => ({
+  title: "Registrar Nova Conta",
+});
+
 const navigator = createStackNavigator(
   {
     Navigator: NavigatorScreen,
     Welcome: WelcomeScreen,
+    RegisterAccount: RegisterAccountScreen,
     RegisterTree: RegisterTreeScreen,
     TreeMap: TreeMapScreen,
   },

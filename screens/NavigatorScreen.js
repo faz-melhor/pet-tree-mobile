@@ -10,6 +10,10 @@ const NavigationScreen = ({ navigation }) => {
         onPress={() => navigation.navigate("Welcome")}
       />
       <Button
+        title="Go to Account Registration Screen"
+        onPress={() => navigation.navigate("RegisterAccount")}
+      />
+      <Button
         title="Go to Tree Registration Screen"
         onPress={() => navigation.navigate("RegisterTree")}
       />
