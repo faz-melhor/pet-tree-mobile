@@ -1,58 +1,80 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
-import { TextInput, Button, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
+import apiClient from "../api/client";
+import {
+  AppForm,
+  AppFormField,
+  SubmitButton,
+  ErrorMessage,
+} from "../components/forms";
+import * as Yup from "yup";
 
-const RegisterAccountScreen = () => {
-  const [email, setEmail] = React.useState("");
-  const [nome, setNome] = React.useState("");
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required().label("Nome"),
+  nickname: Yup.string().required().label("Nickname"),
+  email: Yup.string().required().email().label("Email"),
+  password: Yup.string().required().min(4).label("Senha"),
+});
 
-  const [password, setPassword] = React.useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = React.useState("");
-
+const RegisterAccountScreen = ({ navigation }) => {
   const { defaultMargin } = useTheme();
+  const [error, setError] = React.useState();
+
+  const handleSubmit = async (userInfo) => {
+    const result = await apiClient.post("/users", userInfo);
+    if (!result.ok) {
+      if (result.data) setError(result.data.error);
+      else {
+        setError("An unexpected error occurred.");
+        console.log(result);
+      }
+      return;
+    }
+
+    navigation.goBack(null);
+  };
 
   return (
     <View style={styles({ defaultMargin }).container}>
-      <TextInput
-        style={styles().item}
-        label="E-mail"
-        mode="outlined"
-        value={email}
-        onChangeText={(email) => setEmail(email)}
-      />
-      <TextInput
-        style={styles().item}
-        label="Nome"
-        mode="outlined"
-        value={nome}
-        onChangeText={(nome) => setNome(nome)}
-      />
-      <TextInput
-        style={styles().item}
-        label="Senha"
-        mode="outlined"
-        secureTextEntry={true}
-        value={password}
-        onChangeText={(password) => setPassword(password)}
-      />
-      <TextInput
-        style={styles().item}
-        label="Confirmar Senha"
-        mode="outlined"
-        secureTextEntry={true}
-        value={passwordConfirmation}
-        onChangeText={(passwordConfirmation) =>
-          setPasswordConfirmation(passwordConfirmation)
-        }
-      />
-      <Button
-        style={styles().button}
-        contentStyle={{ height: 50 }}
-        mode="contained"
-        onPress={() => console.log("Pressed")}
+      <AppForm
+        initialValues={{ name: "", nickname: "", email: "", password: "" }}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
       >
-        Entrar
-      </Button>
+        <ErrorMessage error={error} visible={error} />
+        <AppFormField
+          autoCorrect={false}
+          mode="outlined"
+          name="name"
+          placeholder="Name"
+        />
+        <AppFormField
+          autoCorrect={false}
+          mode="outlined"
+          name="nickname"
+          placeholder="Nickname"
+        />
+        <AppFormField
+          autoCapitalize="none"
+          autoCorrect={false}
+          mode="outlined"
+          keyboardType="email-address"
+          name="email"
+          placeholder="Email"
+          textContentType="emailAddress"
+        />
+        <AppFormField
+          autoCapitalize="none"
+          autoCorrect={false}
+          mode="outlined"
+          name="password"
+          placeholder="Password"
+          secureTextEntry
+          textContentType="password"
+        />
+        <SubmitButton title="Registrar" />
+      </AppForm>
     </View>
   );
 };
