@@ -2,6 +2,8 @@ import * as React from "react";
 import { StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
 import apiClient from "../api/client";
+import usersApi from "../api/users";
+import useApi from "../hooks/useApi";
 import {
   AppForm,
   AppFormField,
@@ -18,11 +20,12 @@ const validationSchema = Yup.object().shape({
 });
 
 const RegisterAccountScreen = ({ navigation }) => {
+  const registerApi = useApi(usersApi.register);
   const { defaultMargin } = useTheme();
   const [error, setError] = React.useState();
 
   const handleSubmit = async (userInfo) => {
-    const result = await apiClient.post("/users", userInfo);
+    const result = await registerApi.request(userInfo);
     if (!result.ok) {
       if (result.data) setError(result.data.error);
       else {
