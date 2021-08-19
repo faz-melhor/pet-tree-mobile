@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import NavigatorScreen from "./screens/NavigatorScreen";
@@ -6,6 +6,10 @@ import WelcomeScreen from "./screens/WelcomeScreen";
 import RegisterAccountScreen from "./screens/RegisterAccountScreen";
 import RegisterTreeScreen from "./screens/RegisterTreeScreen";
 import TreeMapScreen from "./screens/TreeMapScreen";
+import AuthContext from "./auth/context";
+import authStorage from "./auth/storage";
+
+import { AppLoading } from "expo";
 
 import color from "color";
 import {
@@ -64,10 +68,25 @@ const theme = {
 const AppContainer = createAppContainer(navigator);
 
 const RootScreen = () => {
+  const [user, setUser] = useState();
+  const [isReady, setIsReady] = useState(false);
+
+  const restoreUser = async () => {
+    const user = await authStorage.getUser();
+    if (user) setUser(user);
+  };
+
+  if (!isReady)
+    return (
+      <AppLoading startAsync={restoreUser} onFinish={() => setIsReady(true)} />
+    );
+
   return (
-    <PaperProvider theme={theme}>
-      <AppContainer />
-    </PaperProvider>
+    <AuthContext.Provider value={{ user, setUser }}>
+      <PaperProvider theme={theme}>
+        <AppContainer />
+      </PaperProvider>
+    </AuthContext.Provider>
   );
 };
 

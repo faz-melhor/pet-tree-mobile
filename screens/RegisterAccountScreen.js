@@ -1,9 +1,11 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
-import apiClient from "../api/client";
 import usersApi from "../api/users";
+import authApi from "../api/auth";
 import useApi from "../hooks/useApi";
+import useAuth from "../auth/useAuth";
+
 import {
   AppForm,
   AppFormField,
@@ -20,8 +22,12 @@ const validationSchema = Yup.object().shape({
 });
 
 const RegisterAccountScreen = ({ navigation }) => {
-  const registerApi = useApi(usersApi.register);
   const { defaultMargin } = useTheme();
+
+  const registerApi = useApi(usersApi.register);
+  const loginApi = useApi(authApi.login);
+
+  const auth = useAuth();
   const [error, setError] = React.useState();
 
   const handleSubmit = async (userInfo) => {
@@ -35,6 +41,11 @@ const RegisterAccountScreen = ({ navigation }) => {
       return;
     }
 
+    const { data: authToken } = await loginApi.request(
+      userInfo.email,
+      userInfo.password
+    );
+    auth.logIn(authToken["token"]);
     navigation.goBack(null);
   };
 
