@@ -8,13 +8,18 @@ import {
 } from "../components/forms";
 import authApi from "../api/auth";
 import * as Yup from "yup";
+import { Button } from "react-native-paper";
+import routes from "../navigation/routes";
+import useAuth from "../auth/useAuth";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(4).label("Password"),
 });
 
-const WelcomeScreen = () => {
+const WelcomeScreen = ({ navigation }) => {
+  const { logIn } = useAuth();
+
   const [loginFailed, setLoginFailed] = React.useState(false);
 
   const handleSubmit = async ({ email, password }) => {
@@ -22,6 +27,7 @@ const WelcomeScreen = () => {
     if (!result.ok) return setLoginFailed(true);
     setLoginFailed(false);
     console.log("Hey, it works:", result.data);
+    logIn(result.data["token"]);
   };
 
   return (
@@ -59,9 +65,15 @@ const WelcomeScreen = () => {
         <SubmitButton title="Log In" />
         <View style={styles.containerOptions}>
           <Text style={styles.optionsText}>Esqueceu sua senha?</Text>
-          <Text style={styles.optionsText}>
-            ou <Text style={styles.innerText}>Crie sua conta</Text>
-          </Text>
+          <View style={styles.innerContainer}>
+            <Text style={styles.optionsText}>ou</Text>
+            <Button
+              style={styles.innerButton}
+              onPress={() => navigation.navigate(routes.REGISTER_ACCOUNT)}
+            >
+              Crie sua conta
+            </Button>
+          </View>
         </View>
       </AppForm>
     </View>
@@ -80,16 +92,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
   },
-  innerText: {
-    color: "#43a047",
+  innerButton: {
+    margin: 0,
+    padding: 0,
   },
   containerOptions: {
     alignItems: "center",
   },
-
-  optionsText: {
-    marginTop: 10,
-    fontSize: 16,
+  innerContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
+  },
+  optionsText: {
+    fontSize: 16,
   },
 });

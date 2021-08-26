@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
-import { useTheme } from "react-native-paper";
+import { Button, useTheme } from "react-native-paper";
 import usersApi from "../api/users";
 import authApi from "../api/auth";
 import useApi from "../hooks/useApi";
@@ -89,6 +89,7 @@ const RegisterAccountScreen = ({ navigation }) => {
         />
         <SubmitButton title="Registrar" />
       </AppForm>
+      <Button onPress={() => auth.logOut()}>Log out</Button>
     </View>
   );
 };

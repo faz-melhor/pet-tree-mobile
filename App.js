@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import NavigatorScreen from "./screens/NavigatorScreen";
@@ -8,6 +10,8 @@ import RegisterTreeScreen from "./screens/RegisterTreeScreen";
 import TreeMapScreen from "./screens/TreeMapScreen";
 import AuthContext from "./auth/context";
 import authStorage from "./auth/storage";
+import AuthNavigator from "./navigation/AuthNavigator";
+import { navigationRef } from "./navigation/rootNavigation";
 
 import { AppLoading } from "expo";
 
@@ -84,7 +88,10 @@ const RootScreen = () => {
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       <PaperProvider theme={theme}>
-        <AppContainer />
+        <NavigationContainer ref={navigationRef}>
+          {console.log(user)}
+          {user ? <AppContainer /> : <AuthNavigator />}
+        </NavigationContainer>
       </PaperProvider>
     </AuthContext.Provider>
   );
