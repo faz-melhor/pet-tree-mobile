@@ -41,11 +41,6 @@ const RegisterAccountScreen = ({ navigation }) => {
       return;
     }
 
-    const { data: authToken } = await loginApi.request(
-      userInfo.email,
-      userInfo.password
-    );
-    auth.logIn(authToken["token"]);
     navigation.goBack(null);
   };
 

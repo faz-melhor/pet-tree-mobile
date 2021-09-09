@@ -1,48 +1,82 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
-import { TextInput, Text, Button, Switch, useTheme } from "react-native-paper";
+import { Text, Switch, useTheme } from "react-native-paper";
+import {
+  AppForm,
+  AppFormField,
+  SubmitButton,
+  ErrorMessage,
+} from "../components/forms";
+import * as Yup from "yup";
+import useAuth from "../auth/useAuth";
+import useApi from "../hooks/useApi";
+import usersApi from "../api/users";
+import AppFormSwitch from "../components/forms/AppFormSwitch";
 
-const RegisterScreen = () => {
-  const [description, setDescription] = React.useState("");
-  const [treeSpecies, setTreeSpecies] = React.useState("");
+const validationSchema = Yup.object().shape({
+  description: Yup.string().required().label("description"),
+  specie: Yup.string().required().label("specie"),
+  fruitful: Yup.boolean().required(),
+  lat: Yup.number().required(),
+  lng: Yup.number().required(),
+});
+
+const RegisterScreen = (lat, long) => {
+  const { user } = useAuth();
+  const addTree = useApi(usersApi.addTree);
+
   const [treeFruitful, setTreeFruitful] = React.useState(false);
 
   const { defaultMargin } = useTheme();
 
   const onToggleFruitfulSwitch = () => setTreeFruitful(!treeFruitful);
+  const [error, setError] = React.useState();
+
+  const handleSubmit = async (treeInfo) => {
+    const result = await addTree.request(user.sub, treeInfo);
+    if (!result.ok) {
+      if (result.data) setError(result.data.errors.detail);
+      else {
+        setError("An unexpected error occurred.");
+      }
+      return;
+    }
+    console.log("Hey it works");
+    console.log(treeInfo);
+  };
 
   return (
     <View style={styles({ defaultMargin }).container}>
-      <TextInput
-        style={styles().item}
-        label="Descrição"
-        mode="outlined"
-        value={description}
-        onChangeText={(d) => setDescription(d)}
-      />
-      <TextInput
-        style={styles().item}
-        label="Espécie"
-        mode="outlined"
-        value={treeSpecies}
-        onChangeText={(s) => setTreeSpecies(s)}
-      />
-      <View style={styles().switchContainer}>
-        <Switch
-          style={styles().switchComponent}
-          value={treeFruitful}
-          onValueChange={onToggleFruitfulSwitch}
-        />
-        <Text style={styles().switchLabel}>Frutífera</Text>
-      </View>
-      <Button
-        style={styles().button}
-        contentStyle={{ height: 50 }}
-        mode="contained"
-        onPress={() => console.log("Pressed")}
+      <AppForm
+        initialValues={{
+          description: "",
+          specie: "",
+          fruitful: false,
+          lat: -34.57613278928747,
+          lng: -58.40964771739279,
+        }}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
       >
-        Confirmar
-      </Button>
+        <ErrorMessage error={error} visible={error} />
+        <AppFormField
+          autoCorrect={false}
+          mode="outlined"
+          name="description"
+          placeholder="Descrição"
+        />
+        <AppFormField
+          autoCorrect={false}
+          mode="outlined"
+          name="specie"
+          placeholder="Espécie"
+        />
+        <View style={styles().switchContainer}>
+          <AppFormSwitch style={styles().switchComponent} name="fruitful" />
+          <Text style={styles().switchLabel}> Frutífera</Text>
+        </View>
+        <SubmitButton title="Adicionar Árvore" />
+      </AppForm>
     </View>
   );
 };
@@ -90,6 +124,7 @@ const styles = (props) => {
       flexDirection: "row",
       alignItems: "flex-start",
       justifyContent: "flex-start",
+      margin: 10,
     },
   });
 };
