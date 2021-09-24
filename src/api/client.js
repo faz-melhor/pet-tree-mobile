@@ -1,5 +1,5 @@
 import { create } from "apisauce";
-import settings from "../config/settings";
+import settings from "../../config/settings";
 import authStorage from "../auth/storage";
 
 const apiClient = create({

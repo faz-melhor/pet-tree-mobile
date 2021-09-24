@@ -8,34 +8,28 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@react-native-community/masked-view": "^0.1.5",
-    "@react-native-masked-view/masked-view": "^0.2.6",
     "@react-navigation/native": "^6.0.2",
-    "@react-navigation/stack": "^6.0.7",
-    "apisauce": "^2.0.0",
-    "expo": "~39.0.2",
-    "expo-location": "~9.0.0",
-    "expo-secure-store": "~9.2.0",
-    "expo-status-bar": "~1.0.2",
+    "@react-navigation/native-stack": "^6.1.0",
+    "apisauce": "^2.1.1",
+    "color": "^3.2.1",
+    "expo": "~42.0.1",
+    "expo-app-loading": "^1.1.2",
+    "expo-location": "~12.1.2",
+    "expo-secure-store": "~10.2.0",
+    "expo-status-bar": "~1.0.4",
     "formik": "^2.2.9",
     "jwt-decode": "^3.1.2",
-    "querystring": "0.2.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
-    "react-native-gesture-handler": "~1.7.0",
-    "react-native-maps": "^0.27.1",
-    "react-native-paper": "^4.2.0",
-    "react-native-reanimated": "~1.13.0",
-    "react-native-safe-area-context": "3.1.4",
-    "react-native-screens": "~2.10.1",
-    "react-navigation": "^4.1.0",
-    "react-navigation-stack": "^2.0.16",
-    "superagent": "6.1.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
+    "react-native-maps": "0.28.0",
+    "react-native-paper": "^4.9.2",
+    "react-native-safe-area-context": "3.2.0",
+    "react-native-web": "^0.11",
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@babel/core": "~7.9.0"
+    "@babel/core": "^7.9.0"
   },
   "private": true
 }

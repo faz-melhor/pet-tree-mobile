@@ -1,50 +1,17 @@
 import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
-import NavigatorScreen from "./screens/NavigatorScreen";
-import WelcomeScreen from "./screens/WelcomeScreen";
-import RegisterAccountScreen from "./screens/RegisterAccountScreen";
-import RegisterTreeScreen from "./screens/RegisterTreeScreen";
-import TreeMapScreen from "./screens/TreeMapScreen";
-import AuthContext from "./auth/context";
-import authStorage from "./auth/storage";
-import AuthNavigator from "./navigation/AuthNavigator";
-import { navigationRef } from "./navigation/rootNavigation";
-
-import { AppLoading } from "expo";
-
+import AuthContext from "./src/auth/context";
+import authStorage from "./src/auth/storage";
+import AuthNavigator from "./src/navigation/AuthNavigator";
+import AppNavigator from "./src/navigation/AppNavigator";
+import { navigationRef } from "./src/navigation/rootNavigation";
+import AppLoading from "expo-app-loading";
 import color from "color";
 import {
   DefaultTheme,
   withTheme,
   Provider as PaperProvider,
 } from "react-native-paper";
-
-RegisterTreeScreen["navigationOptions"] = (screenProps) => ({
-  title: "Registrar Nova Árvore",
-});
-
-RegisterAccountScreen["navigationOptions"] = (screenProps) => ({
-  title: "Registrar Nova Conta",
-});
-
-const navigator = createStackNavigator(
-  {
-    Navigator: NavigatorScreen,
-    Welcome: WelcomeScreen,
-    RegisterAccount: RegisterAccountScreen,
-    RegisterTree: RegisterTreeScreen,
-    TreeMap: TreeMapScreen,
-  },
-  {
-    initialRoute: "Navigator",
-    defaultNavigationOptions: {
-      title: "PetTree",
-    },
-  }
-);
 
 const theme = {
   ...DefaultTheme,
@@ -69,8 +36,6 @@ const theme = {
   },
 };
 
-const AppContainer = createAppContainer(navigator);
-
 const RootScreen = () => {
   const [user, setUser] = useState();
   const [isReady, setIsReady] = useState(false);
@@ -82,15 +47,18 @@ const RootScreen = () => {
 
   if (!isReady)
     return (
-      <AppLoading startAsync={restoreUser} onFinish={() => setIsReady(true)} />
+      <AppLoading
+        startAsync={restoreUser}
+        onFinish={() => setIsReady(true)}
+        onError={console.warn}
+      />
     );
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       <PaperProvider theme={theme}>
         <NavigationContainer ref={navigationRef}>
-          {console.log(user)}
-          {user ? <AppContainer /> : <AuthNavigator />}
+          {user ? <AppNavigator /> : <AuthNavigator />}
         </NavigationContainer>
       </PaperProvider>
     </AuthContext.Provider>

@@ -1,10 +1,8 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
-import { Button, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import usersApi from "../api/users";
-import authApi from "../api/auth";
 import useApi from "../hooks/useApi";
-import useAuth from "../auth/useAuth";
 
 import {
   AppForm,
@@ -25,9 +23,7 @@ const RegisterAccountScreen = ({ navigation }) => {
   const { defaultMargin } = useTheme();
 
   const registerApi = useApi(usersApi.register);
-  const loginApi = useApi(authApi.login);
 
-  const auth = useAuth();
   const [error, setError] = React.useState();
 
   const handleSubmit = async (userInfo) => {
@@ -84,7 +80,6 @@ const RegisterAccountScreen = ({ navigation }) => {
         />
         <SubmitButton title="Registrar" />
       </AppForm>
-      <Button onPress={() => auth.logOut()}>Log out</Button>
     </View>
   );
 };
