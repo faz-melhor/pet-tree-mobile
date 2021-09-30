@@ -12,6 +12,8 @@ import useAuth from "../auth/useAuth";
 import useApi from "../hooks/useApi";
 import usersApi from "../api/users";
 import AppFormSwitch from "../components/forms/AppFormSwitch";
+import AppActivityIndicator from "../components/AppActivityIndicator";
+import DoneScreen from "./DoneScreen";
 
 const validationSchema = Yup.object().shape({
   description: Yup.string().required().label("description"),
@@ -28,6 +30,7 @@ const RegisterScreen = ({ route, navigation }) => {
 
   const { defaultMargin } = useTheme();
   const [error, setError] = React.useState();
+  const [doneVisible, setDoneVisible] = React.useState(false);
 
   const handleSubmit = async (treeInfo) => {
     console.log("handle submit");
@@ -36,45 +39,56 @@ const RegisterScreen = ({ route, navigation }) => {
     if (!result.ok) {
       if (result.data) setError(result.data.errors.detail);
       else {
-        setError("An unexpected error occurred.");
+        setError("Falha de comunicação com o servidor");
       }
       return;
     }
+    setError(null);
+    setDoneVisible(true);
+  };
+
+  const handleAfterDone = () => {
+    setDoneVisible(false);
+    navigation.goBack(null);
   };
 
   return (
-    <View style={styles({ defaultMargin }).container}>
-      <AppForm
-        initialValues={{
-          description: "",
-          specie: "",
-          fruitful: false,
-          lat: lat,
-          lng: lng,
-        }}
-        onSubmit={handleSubmit}
-        validationSchema={validationSchema}
-      >
-        <ErrorMessage error={error} visible={error} />
-        <AppFormField
-          autoCorrect={false}
-          mode="outlined"
-          name="description"
-          placeholder="Descrição"
-        />
-        <AppFormField
-          autoCorrect={false}
-          mode="outlined"
-          name="specie"
-          placeholder="Espécie"
-        />
-        <View style={styles().switchContainer}>
-          <AppFormSwitch style={styles().switchComponent} name="fruitful" />
-          <Text style={styles().switchLabel}> Frutífera</Text>
-        </View>
-        <SubmitButton title="Adicionar Árvore" />
-      </AppForm>
-    </View>
+    <>
+      <AppActivityIndicator visible={addTree.loading} />
+      <DoneScreen onDone={handleAfterDone} visible={doneVisible} />
+      <View style={styles({ defaultMargin }).container}>
+        <AppForm
+          initialValues={{
+            description: "",
+            specie: "",
+            fruitful: false,
+            lat: lat,
+            lng: lng,
+          }}
+          onSubmit={handleSubmit}
+          validationSchema={validationSchema}
+        >
+          <ErrorMessage error={error} visible={error} />
+          <AppFormField
+            autoCorrect={false}
+            mode="outlined"
+            name="description"
+            placeholder="Descrição"
+          />
+          <AppFormField
+            autoCorrect={false}
+            mode="outlined"
+            name="specie"
+            placeholder="Espécie"
+          />
+          <View style={styles().switchContainer}>
+            <AppFormSwitch style={styles().switchComponent} name="fruitful" />
+            <Text style={styles().switchLabel}> Frutífera</Text>
+          </View>
+          <SubmitButton title="Adicionar Árvore" />
+        </AppForm>
+      </View>
+    </>
   );
 };
 
