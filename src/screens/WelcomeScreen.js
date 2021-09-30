@@ -33,7 +33,7 @@ const WelcomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image source={require("../assets/leaf_logo.png")} />
+        <Image source={require("../../assets/leaf_logo.png")} />
       </View>
       <AppForm
         initialValues={{ email: "", password: "" }}

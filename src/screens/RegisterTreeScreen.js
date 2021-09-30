@@ -1,6 +1,6 @@
 import * as React from "react";
-import { StyleSheet, View } from "react-native";
-import { Text, Switch, useTheme } from "react-native-paper";
+import { StyleSheet, Text, View } from "react-native";
+import { useTheme } from "react-native-paper";
 import {
   AppForm,
   AppFormField,
@@ -21,19 +21,18 @@ const validationSchema = Yup.object().shape({
   lng: Yup.number().required(),
 });
 
-const RegisterScreen = (lat, long) => {
+const RegisterScreen = ({ route, navigation }) => {
+  const { lat, lng } = route.params;
   const { user } = useAuth();
   const addTree = useApi(usersApi.addTree);
 
-  const [treeFruitful, setTreeFruitful] = React.useState(false);
-
   const { defaultMargin } = useTheme();
-
-  const onToggleFruitfulSwitch = () => setTreeFruitful(!treeFruitful);
   const [error, setError] = React.useState();
 
   const handleSubmit = async (treeInfo) => {
+    console.log("handle submit");
     const result = await addTree.request(user.sub, treeInfo);
+    console.log(result);
     if (!result.ok) {
       if (result.data) setError(result.data.errors.detail);
       else {
@@ -41,8 +40,6 @@ const RegisterScreen = (lat, long) => {
       }
       return;
     }
-    console.log("Hey it works");
-    console.log(treeInfo);
   };
 
   return (
@@ -52,8 +49,8 @@ const RegisterScreen = (lat, long) => {
           description: "",
           specie: "",
           fruitful: false,
-          lat: -34.57613278928747,
-          lng: -58.40964771739279,
+          lat: lat,
+          lng: lng,
         }}
         onSubmit={handleSubmit}
         validationSchema={validationSchema}
