@@ -1,112 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import { Divider, IconButton, Menu, Button } from "react-native-paper";
-import routes from "../navigation/routes";
-import useAuth from "../auth/useAuth";
-
-const SetLocationOnMap = ({ region, navigation, setShowLocationPin }) => {
-  const pin = require("../../assets/leaf_pin.png");
-
-  return (
-    <View style={styles.defaultPosition}>
-      <View style={styles.topLeftPosition}>
-        <TouchableOpacity
-          style={styles.greenCircle}
-          onPress={() => setShowLocationPin(false)}
-        >
-          <IconButton
-            color="white"
-            icon="arrow-left"
-            size={25}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.treePinPos}>
-        <Image source={pin} style={styles.treePin} resizeMode='cover' />
-      </View>
-      <View style={styles.bottomCenter}>
-        <Button
-          style={styles.greenButton}
-          mode="contained"
-          contentStyle={{ height: 50 }}
-          onPress={() => {
-            navigation.navigate(routes.REGISTER_TREE, {
-              lat: region.latitude,
-              lng: region.longitude,
-            });
-          }}
-        >
-          Set Location
-        </Button>
-      </View>
-    </View >
-  )
-}
-
-const MenuButton = () => {
-  const [showMenu, setShowMenu] = useState(false);
-  const auth = useAuth();
-
-  return (
-    <View style={styles.topLeftPosition}>
-      <Menu
-        visible={showMenu}
-        onDismiss={() => setShowMenu(false)}
-        anchor={
-          <TouchableOpacity
-            style={styles.greenCircle}
-            onPress={() => setShowMenu(true)}
-          >
-            <IconButton
-              color="white"
-              icon="menu"
-              size={25}
-            />
-          </TouchableOpacity>
-        }
-      >
-        <Menu.Item onPress={() => console.log("refresh")} title="refresh" />
-        <Menu.Item onPress={() => console.log("change distance")} title="change distance" />
-        <Menu.Item onPress={() => console.log("profile")} title="profile" />
-        <Divider />
-        <Menu.Item onPress={() => auth.logOut()} title="logout" />
-      </Menu>
-    </View>
-  )
-}
-
-const RegisterTreeButton = ({ setShowLocationPin }) => {
-  return (
-    <View style={styles.bottomCenter}>
-      <TouchableOpacity style={styles.greenCircle}>
-        <IconButton
-          style={{ backgroundColor: "#43a047" }}
-          color="white"
-          icon="plus"
-          size={40}
-          onPress={() => setShowLocationPin(true)}
-        />
-      </TouchableOpacity>
-    </View>
-  )
-}
-
-const MainButtons = ({ setShowLocationPin }) => {
-  return (
-    <View style={styles.defaultPosition}>
-      <MenuButton />
-      <RegisterTreeButton setShowLocationPin={setShowLocationPin} />
-    </View>
-  )
-}
+import RegisterTreeDialog from "../components/RegisterTreeDialog";
+import MenuButton from "../components/MenuButton";
+import SetLocationOnMap from "../components/SetLocationOnMap";
 
 const TreeMapScreen = ({ navigation }) => {
   const fruitfulTreeMarketImage = require("../../assets/tree_1.png");
   const nonFruitfulTreeMarketImage = require("../../assets/tree_0.png");
   const [region, setRegion] = useState();
-  const [showLocationPin, setShowLocationPin] = useState(false);
+  const [locationPinVisible, setLocationPinVisible] = useState(false);
+  const [dialogVisible, setVisible] = useState(false);
+
+  const showLocationPin = () => setLocationPinVisible(true);
+  const hideLocationPin = () => setLocationPinVisible(false);
+
+  const showDialog = () => setVisible(true);
+  const hideDialog = () => setVisible(false);
 
   const onRegionChange = (region) => {
     setRegion(region);
@@ -152,7 +63,8 @@ const TreeMapScreen = ({ navigation }) => {
           <Image source={nonFruitfulTreeMarketImage} style={styles.treeMarker} resizeMode='cover' />
         </Marker>
       </MapView>
-      {showLocationPin ? <SetLocationOnMap region={region} navigation={navigation} setShowLocationPin={setShowLocationPin} /> : <MainButtons setShowLocationPin={setShowLocationPin} />}
+      {locationPinVisible ? <SetLocationOnMap showDialog={showDialog} region={region} navigation={navigation} hideLocationPin={hideLocationPin} /> : <MenuButton showLocationPin={showLocationPin} />}
+      {dialogVisible ? <RegisterTreeDialog region={region} hideLocationPin={hideLocationPin} hideDialog={hideDialog} /> : null}
     </View>
   );
 };
@@ -166,44 +78,6 @@ const styles = StyleSheet.create({
     height: 35,
     resizeMode: 'contain'
   },
-  defaultPosition: {
-    position: "absolute",
-    bottom: 0,
-    top: 0,
-    right: 0,
-    left: 0,
-  },
-  topLeftPosition: {
-    position: "absolute",
-    top: "8%",
-    left: "8%",
-    alignSelf: "center",
-  },
-  greenCircle: {
-    backgroundColor: "#43a047",
-    borderRadius: 100
-  },
-  treePinPos: {
-    position: "absolute",
-    top: '50%',
-    left: '50%',
-    marginLeft: -50,
-    marginTop: -92,
-  },
-  treePin: {
-    width: 100,
-    height: 100,
-    resizeMode: 'contain'
-  },
-  bottomCenter: {
-    position: "absolute",
-    bottom: "5%",
-    alignSelf: "center",
-  },
-  greenButton: {
-    marginVertical: 10,
-    backgroundColor: "#43a047"
-  }
 });
 
 export default TreeMapScreen;

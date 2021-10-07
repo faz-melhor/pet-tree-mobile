@@ -23,5 +23,6 @@ export default SubmitButton;
 const styles = StyleSheet.create({
   button: {
     marginVertical: 10,
+    backgroundColor: "#43a047"
   },
 });
