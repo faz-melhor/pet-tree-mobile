@@ -26,7 +26,6 @@ const WelcomeScreen = ({ navigation }) => {
     result = await authApi.login(email, password);
     if (!result.ok) return setLoginFailed(true);
     setLoginFailed(false);
-    console.log("Hey, it works:", result.data);
     logIn(result.data["token"]);
   };
 

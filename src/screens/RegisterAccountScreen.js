@@ -32,7 +32,6 @@ const RegisterAccountScreen = ({ navigation }) => {
       if (result.data) setError(result.data.error);
       else {
         setError("An unexpected error occurred.");
-        console.log(result);
       }
       return;
     }
