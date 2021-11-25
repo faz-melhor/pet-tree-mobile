@@ -7,6 +7,7 @@ import {
   ErrorMessage,
 } from "../components/forms";
 import authApi from "../api/auth";
+import usersApi from "../api/users";
 import * as Yup from "yup";
 import { Button } from "react-native-paper";
 import routes from "../navigation/routes";
@@ -18,15 +19,15 @@ const validationSchema = Yup.object().shape({
 });
 
 const WelcomeScreen = ({ navigation }) => {
-  const { logIn } = useAuth();
+  const { logIn, getUserInfo } = useAuth();
 
   const [loginFailed, setLoginFailed] = React.useState(false);
 
   const handleSubmit = async ({ email, password }) => {
-    result = await authApi.login(email, password);
-    if (!result.ok) return setLoginFailed(true);
-    setLoginFailed(false);
-    logIn(result.data["token"]);
+    const api_result = await authApi.login(email, password);
+    const user_info = await getUserInfo(api_result.data["token"]);
+    api_result.ok && user_info ? setLoginFailed(false) : setLoginFailed(true);
+    await logIn(api_result.data["token"], user_info);
   };
 
   return (

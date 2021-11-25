@@ -21,7 +21,7 @@ const TreeMapScreen = ({ navigation }) => {
 
   const onRegionChange = (region) => {
     setRegion(region);
-  }
+  };
 
   const getCurrentPosition = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -30,7 +30,9 @@ const TreeMapScreen = ({ navigation }) => {
       Alert.alert("Ops!", "Permissão de acesso à localização negada.");
     }
 
-    const { coords } = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+    const { coords } = await Location.getCurrentPositionAsync({
+      enableHighAccuracy: true,
+    });
     setRegion({
       latitude: coords.latitude,
       longitude: coords.longitude,
@@ -52,19 +54,38 @@ const TreeMapScreen = ({ navigation }) => {
         showsUserLocation={true}
         onRegionChangeComplete={onRegionChange}
       >
-        <Marker
-          coordinate={{ latitude: -25.519028, longitude: -54.574422 }}
-        >
-          <Image source={fruitfulTreeMarketImage} style={styles.treeMarker} resizeMode='cover' />
+        <Marker coordinate={{ latitude: -25.519028, longitude: -54.574422 }}>
+          <Image
+            source={fruitfulTreeMarketImage}
+            style={styles.treeMarker}
+            resizeMode="cover"
+          />
         </Marker>
-        <Marker
-          coordinate={{ latitude: -25.3074137, longitude: -52.5423814 }}
-        >
-          <Image source={nonFruitfulTreeMarketImage} style={styles.treeMarker} resizeMode='cover' />
+        <Marker coordinate={{ latitude: -25.3074137, longitude: -52.5423814 }}>
+          <Image
+            source={nonFruitfulTreeMarketImage}
+            style={styles.treeMarker}
+            resizeMode="cover"
+          />
         </Marker>
       </MapView>
-      {locationPinVisible ? <SetLocationOnMap showDialog={showDialog} region={region} navigation={navigation} hideLocationPin={hideLocationPin} /> : <MenuButton showLocationPin={showLocationPin} />}
-      {dialogVisible ? <RegisterTreeDialog region={region} hideLocationPin={hideLocationPin} hideDialog={hideDialog} /> : null}
+      {locationPinVisible ? (
+        <SetLocationOnMap
+          showDialog={showDialog}
+          region={region}
+          navigation={navigation}
+          hideLocationPin={hideLocationPin}
+        />
+      ) : (
+        <MenuButton showLocationPin={showLocationPin} navigation={navigation} />
+      )}
+      {dialogVisible ? (
+        <RegisterTreeDialog
+          region={region}
+          hideLocationPin={hideLocationPin}
+          hideDialog={hideDialog}
+        />
+      ) : null}
     </View>
   );
 };
@@ -76,7 +97,7 @@ const styles = StyleSheet.create({
   treeMarker: {
     width: 35,
     height: 35,
-    resizeMode: 'contain'
+    resizeMode: "contain",
   },
 });
 
