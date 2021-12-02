@@ -1,12 +1,7 @@
 import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button, Dialog, Portal, Provider } from 'react-native-paper';
-import {
-  AppForm,
-  AppFormField,
-  SubmitButton,
-  ErrorMessage,
-} from "./forms";
+import { Button, Dialog, Portal, Provider } from "react-native-paper";
+import { AppForm, AppFormField, SubmitButton, ErrorMessage } from "./forms";
 import * as Yup from "yup";
 import useAuth from "../auth/useAuth";
 import useApi from "../hooks/useApi";
@@ -24,7 +19,6 @@ const validationSchema = Yup.object().shape({
 });
 
 const RegisterTreeDialog = ({ region, hideLocationPin, hideDialog }) => {
-
   const lat = region.latitude;
   const lng = region.longitude;
 
@@ -35,7 +29,7 @@ const RegisterTreeDialog = ({ region, hideLocationPin, hideDialog }) => {
   const [doneVisible, setDoneVisible] = React.useState(false);
 
   const handleSubmit = async (treeInfo) => {
-    const result = await addTree.request(user.sub, treeInfo);
+    const result = await addTree.request(user.id, treeInfo);
     if (!result.ok) {
       if (result.data) setError(result.data.errors.detail);
       else {
@@ -79,21 +73,37 @@ const RegisterTreeDialog = ({ region, hideLocationPin, hideDialog }) => {
                     mode="outlined"
                     name="description"
                     placeholder="Descrição"
-                    theme={{ colors: { primary: "#43a047", underlineColor: "transparent" } }}
+                    theme={{
+                      colors: {
+                        primary: "#43a047",
+                        underlineColor: "transparent",
+                      },
+                    }}
                   />
                   <AppFormField
                     autoCorrect={false}
                     mode="outlined"
                     name="specie"
                     placeholder="Espécie"
-                    theme={{ colors: { primary: "#43a047", underlineColor: "transparent" } }}
+                    theme={{
+                      colors: {
+                        primary: "#43a047",
+                        underlineColor: "transparent",
+                      },
+                    }}
                   />
                   <View style={styles.switchContainer}>
-                    <AppFormSwitch color="#43a047" style={styles.switchComponent} name="fruitful" />
+                    <AppFormSwitch
+                      color="#43a047"
+                      style={styles.switchComponent}
+                      name="fruitful"
+                    />
                     <Text style={styles.switchLabel}> Frutífera</Text>
                   </View>
                   <SubmitButton title="Adicionar Árvore" />
-                  <Button color="#43a047" onPress={hideDialog}>Cancelar</Button>
+                  <Button color="#43a047" onPress={hideDialog}>
+                    Cancelar
+                  </Button>
                 </AppForm>
               </View>
             </Dialog>
@@ -102,11 +112,11 @@ const RegisterTreeDialog = ({ region, hideLocationPin, hideDialog }) => {
       </Provider>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    margin: 15
+    margin: 15,
   },
   switchComponent: {
     transform: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
@@ -131,8 +141,8 @@ const styles = StyleSheet.create({
   },
   greenButton: {
     marginVertical: 10,
-    backgroundColor: "#43a047"
-  }
+    backgroundColor: "#43a047",
+  },
 });
 
 export default RegisterTreeDialog;

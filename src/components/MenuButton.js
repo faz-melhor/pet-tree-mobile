@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Divider, IconButton, Menu } from "react-native-paper";
 import useAuth from "../auth/useAuth";
+import routes from "../navigation/routes";
 
-const MenuButton = ({ showLocationPin }) => {
+const MenuButton = ({ showLocationPin, navigation }) => {
   const [showMenu, setShowMenu] = useState(false);
   const auth = useAuth();
 
@@ -17,24 +18,29 @@ const MenuButton = ({ showLocationPin }) => {
             style={styles.greenCircle}
             onPress={() => setShowMenu(true)}
           >
-            <IconButton
-              color="white"
-              icon="menu"
-              size={25}
-            />
+            <IconButton color="white" icon="menu" size={25} />
           </TouchableOpacity>
         }
       >
         <Menu.Item onPress={showLocationPin} title="add tree" />
         <Menu.Item onPress={() => console.log("refresh")} title="refresh" />
-        <Menu.Item onPress={() => console.log("change distance")} title="change distance" />
-        <Menu.Item onPress={() => console.log("profile")} title="profile" />
+        <Menu.Item
+          onPress={() => console.log("change distance")}
+          title="change distance"
+        />
+        <Menu.Item
+          onPress={() => {
+            setShowMenu(false);
+            navigation.navigate(routes.PROFILE);
+          }}
+          title="profile"
+        />
         <Divider />
         <Menu.Item onPress={() => auth.logOut()} title="logout" />
       </Menu>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   topLeftPosition: {
@@ -45,7 +51,7 @@ const styles = StyleSheet.create({
   },
   greenCircle: {
     backgroundColor: "#43a047",
-    borderRadius: 100
+    borderRadius: 100,
   },
 });
 
