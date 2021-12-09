@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { Divider, IconButton, Menu } from "react-native-paper";
-import useAuth from "../auth/useAuth";
+import { IconButton, Menu } from "react-native-paper";
 import routes from "../navigation/routes";
 
-const MenuButton = ({ showLocationPin, navigation }) => {
+const MenuButton = (props) => {
+  const {
+    showLocationPin,
+    showChangeDistanceDialog,
+    refreshTrees,
+    navigation,
+  } = props;
   const [showMenu, setShowMenu] = useState(false);
-  const auth = useAuth();
 
   return (
     <View style={styles.topLeftPosition}>
@@ -23,11 +27,8 @@ const MenuButton = ({ showLocationPin, navigation }) => {
         }
       >
         <Menu.Item onPress={showLocationPin} title="add tree" />
-        <Menu.Item onPress={() => console.log("refresh")} title="refresh" />
-        <Menu.Item
-          onPress={() => console.log("change distance")}
-          title="change distance"
-        />
+        <Menu.Item onPress={refreshTrees} title="refresh" />
+        <Menu.Item onPress={showChangeDistanceDialog} title="change distance" />
         <Menu.Item
           onPress={() => {
             setShowMenu(false);
@@ -35,8 +36,6 @@ const MenuButton = ({ showLocationPin, navigation }) => {
           }}
           title="profile"
         />
-        <Divider />
-        <Menu.Item onPress={() => auth.logOut()} title="logout" />
       </Menu>
     </View>
   );
