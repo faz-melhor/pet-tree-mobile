@@ -7,7 +7,12 @@ const getUser = (userId, authToken = null) => {
   return client.get("/users/" + userId);
 };
 
+const getUserTrees = (userId, authToken = null) => {
+  authToken ? client.setHeader("Authorization", "Bearer " + authToken) : null;
+  return client.get("/users/" + userId + "/trees");
+};
+
 const addTree = (userId, treeInfo) =>
   client.post("/users/" + userId + "/trees", treeInfo);
 
-export default { register, getUser, addTree };
+export default { register, getUser, addTree, getUserTrees };

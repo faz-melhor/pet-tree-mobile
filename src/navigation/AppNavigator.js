@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import TreeMapScreen from "../screens/TreeMapScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import TreeListScreen from "../screens/TreeListScreen";
 
 import routes from "./routes";
 
@@ -17,6 +18,7 @@ const AppNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen name={routes.PROFILE} component={ProfileScreen} />
+      <Stack.Screen name={routes.TREE_LIST} component={TreeListScreen} />
     </Stack.Navigator>
   );
 };

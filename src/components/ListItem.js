@@ -11,6 +11,7 @@ const ListItem = ({
   nick,
   subTitle,
   image,
+  style_image,
   IconComponent,
   onPress,
   renderRightActions,
@@ -20,7 +21,9 @@ const ListItem = ({
       <TouchableHighlight underlayColor={colors.light} onPress={onPress}>
         <View style={styles.container}>
           {IconComponent}
-          {image && <Image style={styles.image} source={image} />}
+          {image && (
+            <Image style={[styles.image, style_image]} source={image} />
+          )}
           <View style={styles.detailsContainer}>
             <AppText style={styles.title} numberOfLines={1}>
               {title}
