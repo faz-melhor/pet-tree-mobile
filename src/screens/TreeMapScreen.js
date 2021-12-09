@@ -36,6 +36,10 @@ const TreeMapScreen = ({ navigation }) => {
     await fetchTrees(region.latitude, region.longitude);
   };
 
+  const onRegionChange = (region) => {
+    setRegion(region);
+  };
+
   const fetchTrees = async (lat, lng) => {
     const result = await getTrees.request({
       lat: lat,
@@ -76,7 +80,7 @@ const TreeMapScreen = ({ navigation }) => {
   const renderTrees = (trees) => {
     return trees.map((tree) => {
       const { lat, lng } = tree;
-      const { id, isFruitful } = tree;
+      const { id, fruitful } = tree;
 
       return (
         <Marker
@@ -89,7 +93,7 @@ const TreeMapScreen = ({ navigation }) => {
           <Image
             style={styles.treeMarker}
             source={
-              isFruitful ? fruitfulTreeMarketImage : nonFruitfulTreeMarketImage
+              fruitful ? fruitfulTreeMarketImage : nonFruitfulTreeMarketImage
             }
             resizeMode="cover"
           />
@@ -120,7 +124,7 @@ const TreeMapScreen = ({ navigation }) => {
         initialRegion={region}
         style={styles.map}
         showsUserLocation={true}
-        onRegionChangeComplete={setCurrentPosition}
+        onRegionChangeComplete={onRegionChange}
       >
         {trees ? renderTrees(trees) : null}
       </MapView>
