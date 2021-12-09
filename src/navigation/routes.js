@@ -3,4 +3,5 @@ export default Object.freeze({
   REGISTER_ACCOUNT: "Register Account",
   MAP: "Map",
   PROFILE: "Profile",
+  TREE_LIST: "Tree List",
 });

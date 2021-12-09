@@ -15,7 +15,7 @@ const menuItems = [
       name: "pine-tree",
       backgroundColor: colors.primary,
     },
-    targetScreen: routes.MAP,
+    targetScreen: routes.TREE_LIST,
   },
 ];
 
