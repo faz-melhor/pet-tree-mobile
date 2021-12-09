@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Image } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { View, StyleSheet, Image, Text } from "react-native";
+import MapView, { Callout, Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import RegisterTreeDialog from "../components/RegisterTreeDialog";
 import MenuButton from "../components/MenuButton";
@@ -79,8 +79,7 @@ const TreeMapScreen = ({ navigation }) => {
 
   const renderTrees = (trees) => {
     return trees.map((tree) => {
-      const { lat, lng } = tree;
-      const { id, fruitful } = tree;
+      const { id, fruitful, lat, lng, description, specie, owner } = tree;
 
       return (
         <Marker
@@ -97,6 +96,17 @@ const TreeMapScreen = ({ navigation }) => {
             }
             resizeMode="cover"
           />
+          <Callout tooltip>
+            <View>
+              <View style={styles.bubble}>
+                <Text style={styles.specie}>Specie: {specie}</Text>
+                <Text style={styles.owner}>Owner: {owner.nickname}</Text>
+                <Text style={styles.description}>{description}</Text>
+              </View>
+              <View style={styles.arrowBorder} />
+              <View style={styles.arrow} />
+            </View>
+          </Callout>
         </Marker>
       );
     });
@@ -168,6 +178,45 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     resizeMode: "contain",
+  },
+  bubble: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+    backgroundColor: "#fff",
+    borderRadius: 6,
+    borderColor: "#ccc",
+    borderWidth: 0.5,
+    padding: 10,
+    width: 150,
+  },
+  arrow: {
+    backgroundColor: "transparent",
+    borderColor: "transparent",
+    borderTopColor: "#fff",
+    borderWidth: 16,
+    marginTop: -32,
+    alignSelf: "center",
+  },
+  arrowBorder: {
+    backgroundColor: "transparent",
+    borderColor: "transparent",
+    borderTopColor: "#007a87",
+    borderWidth: 16,
+    marginTop: -0.5,
+    alignSelf: "center",
+  },
+  description: {
+    fontSize: 16,
+    color: "black",
+    marginTop: 3,
+  },
+  specie: {
+    fontSize: 12,
+    color: "grey",
+  },
+  owner: {
+    fontSize: 10,
+    color: "grey",
   },
 });
 
