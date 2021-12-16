@@ -21,7 +21,6 @@ const menuItems = [
 
 const ProfileScreen = ({ navigation }) => {
   const { user, logOut } = useAuth();
-  console.log(user);
 
   return (
     <Screen style={styles.screen}>
@@ -31,6 +30,7 @@ const ProfileScreen = ({ navigation }) => {
           nick={user.nickname}
           subTitle={user.email}
           image={require("../../assets/profile.png")}
+          onPress={() => navigation.navigate(routes.EDIT_ACCOUNT)}
         />
       </View>
       <View style={styles.container}>

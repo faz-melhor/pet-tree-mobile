@@ -15,4 +15,7 @@ const getUserTrees = (userId, authToken = null) => {
 const addTree = (userId, treeInfo) =>
   client.post("/users/" + userId + "/trees", treeInfo);
 
-export default { register, getUser, addTree, getUserTrees };
+const updateUserInfo = (userId, userInfo) =>
+  client.patch("/users/" + userId, userInfo);
+
+export default { register, getUser, addTree, getUserTrees, updateUserInfo };
