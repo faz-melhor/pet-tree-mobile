@@ -14,6 +14,10 @@ export default useAuth = () => {
 
   const logIn = async (token, user) => {
     authStorage.storeToken(token);
+    setUserInfo(user);
+  };
+
+  const setUserInfo = async (user) => {
     authStorage.storeUser(user);
     setUser(user);
   };
@@ -26,5 +30,5 @@ export default useAuth = () => {
     return userInfo.data;
   };
 
-  return { user, logIn, logOut, getUserInfo };
+  return { user, logIn, logOut, getUserInfo, setUserInfo };
 };
