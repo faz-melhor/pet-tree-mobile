@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image, Text } from "react-native";
+import { IconButton } from "react-native-paper";
 import MapView, { Callout, Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import RegisterTreeDialog from "../components/RegisterTreeDialog";
+import TreeInfoDialog from "../components/TreeInfoDialog";
 import MenuButton from "../components/MenuButton";
 import SetLocationOnMap from "../components/SetLocationOnMap";
+import WantToEditTreeDialog from "../components/WantToEditTreeDialog";
 import { NewDistanceDialog } from "../components/NewDistanceDialog";
+import useAuth from "../auth/useAuth";
 import useApi from "../hooks/useApi";
 import treesApi from "../api/trees";
 
@@ -16,19 +19,30 @@ const TreeMapScreen = ({ navigation }) => {
   const [trees, setTrees] = useState([]);
   const [treesLoaded, setTreesLoaded] = useState(false);
   const [locationPinVisible, setLocationPinVisible] = useState(false);
-  const [newTreeDialogVisible, setNewTreeDialogVisible] = useState(false);
+  const [treeInfoDialogVisible, setTreeInfoDialogVisible] = useState(false);
+  const [wantToEditTreeDialogVisible, setWantToEditTreeDialogVisible] =
+    useState(false);
   const [changeDistanceDialogVisible, setChangeDistanceDialogVisible] =
     useState(false);
   const [radius, setRadius] = useState(12000);
+  const [currentTree, setCurrentTree] = useState({});
+  const [currentAction, setCurrentAction] = useState("add");
+  const { user } = useAuth();
 
-  const showLocationPin = () => setLocationPinVisible(true);
+  const showLocationPin = () => {
+    setCurrentAction("add");
+    setLocationPinVisible(true);
+  };
   const hideLocationPin = () => setLocationPinVisible(false);
 
-  const showNewTreeDialog = () => setNewTreeDialogVisible(true);
-  const hideNewTreeDialog = () => setNewTreeDialogVisible(false);
+  const showTreeInfoDialog = () => setTreeInfoDialogVisible(true);
+  const hideTreeInfoDialog = () => setTreeInfoDialogVisible(false);
 
   const showChangeDistanceDialog = () => setChangeDistanceDialogVisible(true);
   const hideChangeDistanceDialog = () => setChangeDistanceDialogVisible(false);
+
+  const showWantToEditTreeDialog = () => setWantToEditTreeDialogVisible(true);
+  const hideWantToEditTreeDialog = () => setWantToEditTreeDialogVisible(false);
 
   const getTrees = useApi(treesApi.getTrees);
 
@@ -77,18 +91,18 @@ const TreeMapScreen = ({ navigation }) => {
     });
   };
 
+  const prepareEditInfo = (tree) => {
+    setCurrentAction("update");
+    setCurrentTree(tree);
+    showWantToEditTreeDialog();
+  };
+
   const renderTrees = (trees) => {
     return trees.map((tree) => {
       const { id, fruitful, lat, lng, description, specie, owner } = tree;
 
       return (
-        <Marker
-          key={id}
-          coordinate={{ latitude: lat, longitude: lng }}
-          // onPress={() => {
-          //   navigation.navigate("TreeDetails", { tree });
-          // }}
-        >
+        <Marker key={id} coordinate={{ latitude: lat, longitude: lng }}>
           <Image
             style={styles.treeMarker}
             source={
@@ -96,16 +110,24 @@ const TreeMapScreen = ({ navigation }) => {
             }
             resizeMode="cover"
           />
-          <Callout tooltip>
-            <View>
-              <View style={styles.bubble}>
-                <Text style={styles.specie}>Specie: {specie}</Text>
-                <Text style={styles.owner}>Owner: {owner.nickname}</Text>
-                <Text style={styles.description}>{description}</Text>
-              </View>
-              <View style={styles.arrowBorder} />
-              <View style={styles.arrow} />
+          <Callout
+            tooltip
+            onPress={owner.id == user.id ? () => prepareEditInfo(tree) : null}
+          >
+            <View style={styles.bubble}>
+              {owner.id == user.id ? (
+                <IconButton
+                  icon="pencil"
+                  size={15}
+                  style={{ padding: 0, margin: 0 }}
+                />
+              ) : null}
+              <Text style={styles.specie}>Specie: {specie}</Text>
+              <Text style={styles.owner}>Owner: {owner.nickname}</Text>
+              <Text style={styles.description}>{description}</Text>
             </View>
+            <View style={styles.arrowBorder} />
+            <View style={styles.arrow} />
           </Callout>
         </Marker>
       );
@@ -140,10 +162,10 @@ const TreeMapScreen = ({ navigation }) => {
       </MapView>
       {locationPinVisible ? (
         <SetLocationOnMap
-          showDialog={showNewTreeDialog}
-          region={region}
-          navigation={navigation}
+          showDialog={showTreeInfoDialog}
           hideLocationPin={hideLocationPin}
+          region={region}
+          setCurrentTree={setCurrentTree}
         />
       ) : (
         <MenuButton
@@ -153,17 +175,24 @@ const TreeMapScreen = ({ navigation }) => {
           navigation={navigation}
         />
       )}
-      {newTreeDialogVisible ? (
-        <RegisterTreeDialog
-          region={region}
+      {treeInfoDialogVisible ? (
+        <TreeInfoDialog
           hideLocationPin={hideLocationPin}
-          hideDialog={hideNewTreeDialog}
+          hideDialog={hideTreeInfoDialog}
+          tree={currentTree}
+          action={currentAction}
         />
       ) : null}
       {changeDistanceDialogVisible ? (
         <NewDistanceDialog
           hideDialog={hideChangeDistanceDialog}
           setRadius={setRadius}
+        />
+      ) : null}
+      {wantToEditTreeDialogVisible ? (
+        <WantToEditTreeDialog
+          hideDialog={hideWantToEditTreeDialog}
+          showTreeInfoDialog={showTreeInfoDialog}
         />
       ) : null}
     </View>

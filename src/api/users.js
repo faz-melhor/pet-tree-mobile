@@ -18,4 +18,14 @@ const addTree = (userId, treeInfo) =>
 const updateUserInfo = (userId, userInfo) =>
   client.patch("/users/" + userId, userInfo);
 
-export default { register, getUser, addTree, getUserTrees, updateUserInfo };
+const updateTree = (userId, treeId, treeInfo) =>
+  client.patch("/users/" + userId + "/trees/" + treeId, treeInfo);
+
+export default {
+  register,
+  getUser,
+  addTree,
+  updateTree,
+  getUserTrees,
+  updateUserInfo,
+};

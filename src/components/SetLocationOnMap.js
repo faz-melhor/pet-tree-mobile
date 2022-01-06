@@ -1,26 +1,36 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { IconButton, Button } from "react-native-paper";
+import { IconButton } from "react-native-paper";
 
-const SetLocationOnMap = ({ showDialog, hideLocationPin }) => {
+const SetLocationOnMap = ({
+  showDialog,
+  hideLocationPin,
+  region,
+  setCurrentTree,
+}) => {
   const pin = require("../../assets/leaf_pin.png");
+
+  const prepareAddInfo = (region, setCurrentTree) => {
+    const tree = {
+      description: "",
+      specie: "",
+      fruitful: false,
+      lat: region.latitude,
+      lng: region.longitude,
+    };
+    setCurrentTree(tree);
+    showDialog();
+  };
 
   return (
     <View style={styles.defaultPosition}>
       <View style={styles.topLeftPosition}>
-        <TouchableOpacity
-          style={styles.greenCircle}
-          onPress={hideLocationPin}
-        >
-          <IconButton
-            color="white"
-            icon="arrow-left"
-            size={25}
-          />
+        <TouchableOpacity style={styles.greenCircle} onPress={hideLocationPin}>
+          <IconButton color="white" icon="arrow-left" size={25} />
         </TouchableOpacity>
       </View>
       <View style={styles.treePinPos}>
-        <Image source={pin} style={styles.treePin} resizeMode='cover' />
+        <Image source={pin} style={styles.treePin} resizeMode="cover" />
       </View>
       <View style={styles.bottomCenter}>
         <TouchableOpacity style={styles.greenCircle}>
@@ -29,13 +39,13 @@ const SetLocationOnMap = ({ showDialog, hideLocationPin }) => {
             color="white"
             icon="plus"
             size={40}
-            onPress={showDialog}
+            onPress={() => prepareAddInfo(region, setCurrentTree)}
           />
         </TouchableOpacity>
       </View>
-    </View >
-  )
-}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   defaultPosition: {
@@ -53,19 +63,19 @@ const styles = StyleSheet.create({
   },
   greenCircle: {
     backgroundColor: "#43a047",
-    borderRadius: 100
+    borderRadius: 100,
   },
   treePinPos: {
     position: "absolute",
-    top: '50%',
-    left: '50%',
+    top: "50%",
+    left: "50%",
     marginLeft: -50,
     marginTop: -92,
   },
   treePin: {
     width: 100,
     height: 100,
-    resizeMode: 'contain'
+    resizeMode: "contain",
   },
   bottomCenter: {
     position: "absolute",
@@ -75,7 +85,7 @@ const styles = StyleSheet.create({
   greenButton: {
     marginVertical: 10,
     backgroundColor: "#43a047",
-  }
+  },
 });
 
 export default SetLocationOnMap;
