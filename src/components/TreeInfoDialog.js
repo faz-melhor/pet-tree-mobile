@@ -18,18 +18,25 @@ const validationSchema = Yup.object().shape({
   lng: Yup.number().required(),
 });
 
-const RegisterTreeDialog = ({ region, hideLocationPin, hideDialog }) => {
-  const lat = region.latitude;
-  const lng = region.longitude;
+const TreeInfoDialog = ({ hideLocationPin, hideDialog, tree, action }) => {
+  const buttonText = action == "add" ? "Adicionar Árvore" : "Salvar Alterações";
 
   const { user } = useAuth();
   const addTree = useApi(usersApi.addTree);
+  const updateTree = useApi(usersApi.updateTree);
 
   const [error, setError] = React.useState();
   const [doneVisible, setDoneVisible] = React.useState(false);
 
   const handleSubmit = async (treeInfo) => {
-    const result = await addTree.request(user.id, treeInfo);
+    let result = null;
+
+    if (action == "add") {
+      result = await addTree.request(user.id, treeInfo);
+    } else {
+      result = await updateTree.request(user.id, treeInfo.id, treeInfo);
+    }
+
     if (!result.ok) {
       if (result.data) setError(result.data.errors.detail);
       else {
@@ -57,13 +64,7 @@ const RegisterTreeDialog = ({ region, hideLocationPin, hideDialog }) => {
               <DoneScreen onDone={handleAfterDone} visible={doneVisible} />
               <View style={styles.container}>
                 <AppForm
-                  initialValues={{
-                    description: "",
-                    specie: "",
-                    fruitful: false,
-                    lat: lat,
-                    lng: lng,
-                  }}
+                  initialValues={tree}
                   onSubmit={handleSubmit}
                   validationSchema={validationSchema}
                 >
@@ -100,7 +101,7 @@ const RegisterTreeDialog = ({ region, hideLocationPin, hideDialog }) => {
                     />
                     <Text style={styles.switchLabel}> Frutífera</Text>
                   </View>
-                  <SubmitButton title="Adicionar Árvore" />
+                  <SubmitButton title={buttonText} />
                   <Button color="#43a047" onPress={hideDialog}>
                     Cancelar
                   </Button>
@@ -145,4 +146,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegisterTreeDialog;
+export default TreeInfoDialog;
