@@ -17,8 +17,6 @@ const TreeListScreen = () => {
     getTrees.request(user.id);
   }, []);
 
-  console.log(getTrees.data.trees);
-
   return (
     <Screen>
       <AppActivityIndicator visible={getTrees.loading} />
