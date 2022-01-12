@@ -4,6 +4,13 @@ export default useApi = (apiFunc) => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { _, logOut } = useAuth();
+
+  const handleAuthorization = (response) => {
+    if (response.status == 401) {
+      logOut();
+    }
+  };
 
   const request = async (...args) => {
     setLoading(true);
@@ -11,6 +18,8 @@ export default useApi = (apiFunc) => {
     setLoading(false);
     setError(!response.ok);
     setData(response.data);
+    handleAuthorization(response);
+
     return response;
   };
 
