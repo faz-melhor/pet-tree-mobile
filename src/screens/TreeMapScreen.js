@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Image, Text } from "react-native";
 import { IconButton } from "react-native-paper";
 import MapView, { Callout, Marker } from "react-native-maps";
@@ -11,8 +11,9 @@ import { NewDistanceDialog } from "../components/NewDistanceDialog";
 import useAuth from "../auth/useAuth";
 import useApi from "../hooks/useApi";
 import treesApi from "../api/trees";
+import { useIsFocused } from "@react-navigation/native";
 
-const TreeMapScreen = ({ navigation }) => {
+const TreeMapScreen = ({ route, navigation }) => {
   const fruitfulTreeMarketImage = require("../../assets/tree_1.png");
   const nonFruitfulTreeMarketImage = require("../../assets/tree_0.png");
   const [region, setRegion] = useState();
@@ -28,6 +29,10 @@ const TreeMapScreen = ({ navigation }) => {
   const [currentTree, setCurrentTree] = useState({});
   const [currentAction, setCurrentAction] = useState("add");
   const { user } = useAuth();
+  const isFocused = useIsFocused();
+  const mapRef = useRef(null);
+  let markers = {};
+  const [focusedTree, setFocusedTree] = useState("");
 
   const showLocationPin = () => {
     setCurrentAction("add");
@@ -91,6 +96,38 @@ const TreeMapScreen = ({ navigation }) => {
     });
   };
 
+  const setCurrentPositionFromParams = async () => {
+    let found = false;
+
+    for (let i = 0; i < trees.length; i++) {
+      if (trees[i].id == route.params.tree.id) {
+        found = true;
+      }
+    }
+
+    if (!found) {
+      const owner = {
+        id: user.id,
+        nickname: user.nickname,
+      };
+
+      route.params.tree.owner = owner;
+
+      trees.push(route.params.tree);
+    }
+
+    const newRegion = {
+      latitude: route.params.tree.lat,
+      longitude: route.params.tree.lng,
+      latitudeDelta: 0.02305,
+      longitudeDelta: 0.010525,
+      timing: 1000,
+    };
+
+    mapRef.current.animateToRegion(newRegion, 1000 * 2);
+    setFocusedTree(route.params.tree.id);
+  };
+
   const prepareEditInfo = (tree) => {
     setCurrentAction("update");
     setCurrentTree(tree);
@@ -102,7 +139,11 @@ const TreeMapScreen = ({ navigation }) => {
       const { id, fruitful, lat, lng, description, specie, owner } = tree;
 
       return (
-        <Marker key={id} coordinate={{ latitude: lat, longitude: lng }}>
+        <Marker
+          key={id}
+          coordinate={{ latitude: lat, longitude: lng }}
+          ref={(ref) => (markers[id] = ref)}
+        >
           <Image
             style={styles.treeMarker}
             source={
@@ -135,8 +176,12 @@ const TreeMapScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    setCurrentPosition();
-  }, []);
+    if (route.params != undefined) {
+      setCurrentPositionFromParams();
+    } else {
+      setCurrentPosition();
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     renderTrees(trees);
@@ -150,9 +195,16 @@ const TreeMapScreen = ({ navigation }) => {
     }
   }, [region, treesLoaded]);
 
+  useEffect(() => {
+    if (focusedTree != "") {
+      markers[focusedTree].showCallout();
+    }
+  }, [focusedTree]);
+
   return (
     <View style={styles.map}>
       <MapView
+        ref={mapRef}
         initialRegion={region}
         style={styles.map}
         showsUserLocation={true}

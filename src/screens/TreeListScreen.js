@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import ListItem from "../components/ListItem";
 import ListItemSeparator from "../components/ListItemSeparator";
@@ -9,9 +9,10 @@ import usersApi from "../api/users";
 import useApi from "../hooks/useApi";
 import useAuth from "../auth/useAuth";
 import AppActivityIndicator from "../components/AppActivityIndicator";
+import routes from "../navigation/routes";
 
-const TreeListScreen = () => {
-  const { user, logOut } = useAuth();
+const TreeListScreen = ({ navigation }) => {
+  const { user } = useAuth();
   const getTrees = useApi(usersApi.getUserTrees);
   useEffect(() => {
     getTrees.request(user.id);
@@ -37,7 +38,7 @@ const TreeListScreen = () => {
               width: 35,
               height: 42,
             }}
-            onPress={() => console.log("Tree Press", item)}
+            onPress={() => navigation.navigate(routes.MAP, { tree: item })}
           />
         )}
         ItemSeparatorComponent={ListItemSeparator}
