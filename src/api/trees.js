@@ -1,6 +1,6 @@
 import client from "./client";
 
-//TODO: change status to `accepted`
-const getTrees = (params) => client.get("/trees", {...params, status: "pending"});
+const getTrees = (params) =>
+  client.get("/trees", { ...params, status: "accepted" });
 
 export default { getTrees };

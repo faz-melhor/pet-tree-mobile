@@ -9,7 +9,7 @@ const getUser = (userId, authToken = null) => {
 
 const getUserTrees = (userId, authToken = null) => {
   authToken ? client.setHeader("Authorization", "Bearer " + authToken) : null;
-  return client.get("/users/" + userId + "/trees");
+  return client.get("/users/" + userId + "/trees", { status: "accepted" });
 };
 
 const addTree = (userId, treeInfo) =>
